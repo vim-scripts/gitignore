@@ -63,6 +63,7 @@ noremap <unique> <script> <Plug>WildignoreFromGitignore <SID>WildignoreFromGitig
 noremap <SID>WildignoreFromGitignore :call <SID>WildignoreFromGitignore()<CR>
 
 command -nargs=? WildignoreFromGitignore :call <SID>WildignoreFromGitignore(<q-args>)
+command -nargs=? WildignoreFromGitignoreFile :call <SID>WildignoreFromGitignoreFile(<q-args>)
 
 augroup wildignorefromgitignore_fugitive
     autocmd!
