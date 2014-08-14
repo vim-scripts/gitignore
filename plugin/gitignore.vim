@@ -1,5 +1,5 @@
 " Vim plugin that add the entries in a .gitignore file to 'wildignore'
-" Last Change:	2012 Aug 6
+" Last Change:  2012 Aug 6
 " Maintainer:	Adam Bellaire
 " Contributors:	Giuseppe Rota
 " License:	This file is placed in the public domain.
@@ -29,15 +29,17 @@ if exists("g:loaded_gitignore_wildignore")
 endif
 let g:loaded_gitignore_wildignore = 1
 
+if !exists("g:load_global_gitignore_wildignore")
+  let g:load_global_gitignore_wildignore = $HOME . "/.gitignore"
+endif
+
 let s:save_cpo = &cpo
 set cpo&vim
 
-function s:WildignoreFromGitignore(...)
-  let gitignore = (a:0 && !empty(a:1)) ? fnamemodify(a:1, ':p') : fnamemodify(expand('%'), ':p:h') . '/'
-  let gitignore .= '.gitignore'
-  if filereadable(gitignore)
+function s:WildignoreFromGitignoreFile(file)
+  if filereadable(a:file)
     let igstring = ''
-    for oline in readfile(gitignore)
+    for oline in readfile(a:file)
       let line = substitute(oline, '\s|\n|\r', '', "g")
       if line =~ '^#' | con | endif
       if line == ''   | con | endif
@@ -50,10 +52,18 @@ function s:WildignoreFromGitignore(...)
   endif
 endfunction
 
+function s:WildignoreFromGitignore(...)
+  let gitignore = (a:0 && !empty(a:1)) ? fnamemodify(a:1, ':p') : fnamemodify(expand('%'), ':p:h') . '/'
+  let gitignore .= '.gitignore'
+  call s:WildignoreFromGitignoreFile(g:load_global_gitignore_wildignore)
+  call s:WildignoreFromGitignoreFile(gitignore)
+endfunction
+
 noremap <unique> <script> <Plug>WildignoreFromGitignore <SID>WildignoreFromGitignore
 noremap <SID>WildignoreFromGitignore :call <SID>WildignoreFromGitignore()<CR>
 
 command -nargs=? WildignoreFromGitignore :call <SID>WildignoreFromGitignore(<q-args>)
+command -nargs=? WildignoreFromGitignoreFile :call <SID>WildignoreFromGitignoreFile(<q-args>)
 
 augroup wildignorefromgitignore_fugitive
     autocmd!
