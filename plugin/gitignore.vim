@@ -43,7 +43,7 @@ function s:WildignoreFromGitignore(...)
       if line == ''   | con | endif
       if line =~ '^!' | con | endif
       if line =~ '/$' | let igstring .= "," . line . "*" | con | endif
-      let igstring .= "," . line
+      let igstring .= "," . substitute(line, ' ', '\\ ', "g")
     endfor
     let execstring = "set wildignore+=".substitute(igstring, '^,', '', "g")
     execute execstring
