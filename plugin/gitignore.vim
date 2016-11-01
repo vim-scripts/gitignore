@@ -1,7 +1,8 @@
 " Vim plugin that add the entries in a .gitignore file to 'wildignore'
-" Last Change:	2012 Aug 6
+" Last Change:	2016 Sep 14
 " Maintainer:	Adam Bellaire
 " Contributors:	Giuseppe Rota
+"               Lukas Erlacher
 " License:	This file is placed in the public domain.
 "
 "                     Fugitive Integration
@@ -43,7 +44,7 @@ function s:WildignoreFromGitignore(...)
       if line == ''   | con | endif
       if line =~ '^!' | con | endif
       if line =~ '/$' | let igstring .= "," . line . "*" | con | endif
-      let igstring .= "," . line
+      let igstring .= "," . substitute(line, ' ', '\\ ', "g")
     endfor
     let execstring = "set wildignore+=".substitute(igstring, '^,', '', "g")
     execute execstring
